@@ -1,9 +1,16 @@
 package org.example;
 
+import edu.ufl.digitalworlds.j4k.J4KSDK;
+import org.example.Computation.SensorHandler;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        GUIHandler guiHandler = new GUIHandler();
+        new MainGUI(guiHandler);
 
-        new MainGUI(new GUIHandler());
+
+        SensorHandler s = new SensorHandler(guiHandler);
+        s.start(J4KSDK.SKELETON);
+
     }
 }

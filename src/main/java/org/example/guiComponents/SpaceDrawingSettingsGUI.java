@@ -9,5 +9,6 @@ public class SpaceDrawingSettingsGUI extends JPanel {
 
     public SpaceDrawingSettingsGUI(GUIHandler handler) {
         setBackground(Color.GREEN);
+        add(new JLabel("Sensor List"));
     }
 }

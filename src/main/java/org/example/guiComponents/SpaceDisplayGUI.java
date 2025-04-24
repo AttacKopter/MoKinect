@@ -1,5 +1,6 @@
 package org.example.guiComponents;
 
+import com.jogamp.opengl.util.FPSAnimator;
 import org.example.GUIHandler;
 
 import com.jogamp.opengl.GLAutoDrawable;
@@ -7,41 +8,36 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.awt.GLCanvas;
+import org.example.Computation.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SpaceDisplayGUI extends JPanel {
 
+    private final GLCanvas glcanvas;
     public SpaceDisplayGUI(GUIHandler guiHandler) {
-        this.setBackground(Color.YELLOW);
+//        this.setBackground(Color.YELLOW);
 
 
         GLProfile glprofile = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities( glprofile );
-        final GLCanvas glcanvas = new GLCanvas( glcapabilities );
+        glcanvas = new GLCanvas( glcapabilities );
 
-        glcanvas.addGLEventListener( new GLEventListener() {
+        Renderer triangle = new Renderer(guiHandler);
+        glcanvas.addGLEventListener( triangle );
 
-            @Override
-            public void reshape( GLAutoDrawable glautodrawable, int x, int y, int width, int height ) {
-                OneTriangle.setup( glautodrawable.getGL().getGL2(), width, height );
-            }
-
-            @Override
-            public void init( GLAutoDrawable glautodrawable ) {
-            }
-
-            @Override
-            public void dispose( GLAutoDrawable glautodrawable ) {
-            }
-
-            @Override
-            public void display( GLAutoDrawable glautodrawable ) {
-                OneTriangle.render( glautodrawable.getGL().getGL2(), glautodrawable.getSurfaceWidth(), glautodrawable.getSurfaceHeight() );
-            }
-        });
+        glcanvas.setSize(400, 400);
 
         add( glcanvas, BorderLayout.CENTER );
+
+        final FPSAnimator animator = new FPSAnimator(glcanvas, 300,true);
+        animator.start();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        glcanvas.setSize(getWidth()-10, getHeight()-10);
+        super.paint(g);
     }
 }
