@@ -1,6 +1,7 @@
 package org.example;
 
 import edu.ufl.digitalworlds.j4k.J4KSDK;
+import org.example.Computation.Sensor;
 import org.example.Computation.SensorHandler;
 
 public class Main {
@@ -8,9 +9,7 @@ public class Main {
         GUIHandler guiHandler = new GUIHandler();
         new MainGUI(guiHandler);
 
-
-        SensorHandler s = new SensorHandler(guiHandler);
-        s.start(J4KSDK.SKELETON);
+        Sensor s = new Sensor(guiHandler);
 
     }
 }

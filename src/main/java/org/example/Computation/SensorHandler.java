@@ -9,11 +9,12 @@ import org.example.GUIHandler;
 public class SensorHandler extends J4KSDK {
 
     VideoFrame videoTexture;
-    GUIHandler guiHandler;
+    Sensor sensor;
+    Skeleton skeleton;
 
-    public SensorHandler(GUIHandler guiHandler) {
+    public SensorHandler(Sensor sensor) {
         super();
-        this.guiHandler = guiHandler;
+        this.sensor = sensor;
         videoTexture=new VideoFrame();
     }
 
@@ -21,6 +22,10 @@ public class SensorHandler extends J4KSDK {
 
         DepthMap map=new DepthMap(getDepthWidth(),getDepthHeight(),XYZ);
         if(UV!=null) map.setUV(UV);
+
+//        guiHandler.setMap(map);
+
+
     }
 
     /*The following method will run every time a new skeleton frame
@@ -39,7 +44,7 @@ public class SensorHandler extends J4KSDK {
 
 
             if( (100> x && x > 0.0000001) && (100> y && y > 0.0000001) && (100> z && z > 0.0000001)) {
-                guiHandler.addSkeleton(skeletons[i]);
+                skeleton = skeletons[i];
             }
         }
     }

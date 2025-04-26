@@ -12,6 +12,8 @@ import org.example.Computation.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class SpaceDisplayGUI extends JPanel {
 
@@ -24,15 +26,39 @@ public class SpaceDisplayGUI extends JPanel {
         GLCapabilities glcapabilities = new GLCapabilities( glprofile );
         glcanvas = new GLCanvas( glcapabilities );
 
-        Renderer triangle = new Renderer(guiHandler);
-        glcanvas.addGLEventListener( triangle );
+        Renderer r = new Renderer(guiHandler);
+        glcanvas.addGLEventListener( r );
 
-        glcanvas.setSize(400, 400);
+        glcanvas.setSize(1600, 900);
 
         add( glcanvas, BorderLayout.CENTER );
 
         final FPSAnimator animator = new FPSAnimator(glcanvas, 300,true);
         animator.start();
+
+
+
+
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+            @Override
+            public boolean postProcessKeyEvent(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_W) {
+                    r.camY += 0.1f;
+                }
+                if (e.getKeyCode() == KeyEvent.VK_S) {
+                    r.camY -= 0.1f;
+                }
+                if  (e.getKeyCode() == KeyEvent.VK_A) {
+                    r.camYaw += 1f;
+                }
+                if (e.getKeyCode() == KeyEvent.VK_D) {
+                    r.camYaw -= 1f;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
