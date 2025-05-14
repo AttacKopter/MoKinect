@@ -1,18 +1,15 @@
-package org.example.guiComponents;
+package org.example.server.guiComponents;
 
 import com.jogamp.opengl.util.FPSAnimator;
-import org.example.GUIHandler;
+import org.example.server.GUIHandler;
 
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.awt.GLCanvas;
-import org.example.Computation.Renderer;
+import org.example.server.Computation.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class SpaceDisplayGUI extends JPanel {

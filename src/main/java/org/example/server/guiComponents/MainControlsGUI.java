@@ -1,6 +1,6 @@
-package org.example.guiComponents;
+package org.example.server.guiComponents;
 
-import org.example.GUIHandler;
+import org.example.server.GUIHandler;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,8 +1,6 @@
-package org.example;
+package org.example.server;
 
-import edu.ufl.digitalworlds.j4k.DepthMap;
-import edu.ufl.digitalworlds.j4k.Skeleton;
-import org.example.Computation.Sensor;
+import org.example.server.Computation.Sensor;
 
 import java.util.ArrayList;
 

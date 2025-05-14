@@ -1,22 +1,18 @@
-package org.example.Computation;
+package org.example.server.Computation;
 
-import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 import edu.ufl.digitalworlds.j4k.DepthMap;
-import edu.ufl.digitalworlds.j4k.Skeleton;
-import org.example.GUIHandler;
-
-import java.util.Arrays;
+import org.example.server.GUIHandler;
 
 public class Renderer implements GLEventListener {
     private GUIHandler guiHandler;
     private GLUT glut;
 
-    public float camX = 0,camY = 0,camZ = 0;
+    public float camX = 0,camY = 1,camZ = 0;
     public float camYaw = 0,camPitch = 0;
     public Renderer(GUIHandler guiHandler) {
         this.guiHandler = guiHandler;
@@ -31,9 +27,10 @@ public class Renderer implements GLEventListener {
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);  // Clear the screen and depth buffer
         gl.glLoadIdentity();  // Reset the view
 
-        gl.glTranslatef(-camX, -camY, -camZ);
+
         gl.glRotatef(-camYaw, 0, 1, 0);
-        gl.glRotatef(-camPitch, 0, 0, 1);
+        gl.glRotatef(-camPitch, 1, 0, 0);
+        gl.glTranslatef(-camX, -camY, -camZ);
 
         drawGridAtY(gl, -2.0f);
 

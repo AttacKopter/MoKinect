@@ -1,10 +1,13 @@
-package org.example.Computation;
+package org.example.server.Computation;
 
 import com.jogamp.opengl.GL2;
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.Skeleton;
-import org.example.GUIHandler;
+import org.example.server.GUIHandler;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class Sensor {
@@ -12,12 +15,36 @@ public class Sensor {
     private float x,y,z;
     private float yaw,pitch,roll;
 
-    private SensorHandler sensorHandler;
     private GUIHandler guiHandler;
 
-    private ArrayList<Skeleton> skeletons = new ArrayList<Skeleton>();
+    private volatile Skeleton skeleton;
 
     public Sensor(GUIHandler guiHandler) {
+        this.guiHandler = guiHandler;
+
+        x =0;
+        y = -1;
+        z = 1;
+        yaw = 0;
+        pitch = 0;
+        roll = 0;
+
+        SensorHandler sensorHandler = new SensorHandler();
+        sensorHandler.start(J4KSDK.SKELETON | J4KSDK.PLAYER_INDEX | J4KSDK.DEPTH | J4KSDK.UV | J4KSDK.XYZ);
+
+        new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    skeleton = sensorHandler.skeleton;
+                }
+            }
+        }).start();
+
+        guiHandler.sensors.add(this);
+
+    }
+
+    public Sensor(GUIHandler guiHandler, Socket s) {
         this.guiHandler = guiHandler;
 
         x = 0;
@@ -26,12 +53,20 @@ public class Sensor {
         yaw = 0;
         pitch = 0;
         roll = 0;
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    DataInputStream dis = new DataInputStream(s.getInputStream());
+                    while (true) {
+                        String message = dis.readUTF();
+                        skeleton = SensorHandler.getSkeletonFromString(message);
+                    }
 
-        sensorHandler = new SensorHandler(this);
-        sensorHandler.start(J4KSDK.SKELETON | J4KSDK.PLAYER_INDEX | J4KSDK.DEPTH | J4KSDK.UV | J4KSDK.XYZ);
+                } catch (Exception e) {}
+            }
+        }).start();
 
         guiHandler.sensors.add(this);
-
     }
 
 
@@ -54,38 +89,71 @@ public class Sensor {
     }
 
     private void drawSensor(GL2 gl) {
-        float width =0.3f;
-        float height = 0.08f;
-        float depth = 0.1f;
+        float width =0.249f;
+        float height = 0.066f;
+        float depth = 0.067f;
+
+        gl.glPushMatrix();
+        gl.glTranslatef(-0.04f, 0f,0f);
 
         gl.glColor3f(0.9f,0.9f,0.9f);
-        gl.glBegin(GL2.GL_QUADS);
+        gl.glLineWidth(1f);
+        gl.glBegin(GL2.GL_LINES);
 
         gl.glVertex3f(0,0,0);
         gl.glVertex3f(width,0,0);
-        gl.glVertex3f(width,height,0);
+
+        gl.glVertex3f(0,0,0);
+        gl.glVertex3f(0,0,depth);
+
+        gl.glVertex3f(0,0,0);
         gl.glVertex3f(0,height,0);
 
-        gl.glVertex3f(0,0,depth);
+        gl.glVertex3f(width,height,depth);
+        gl.glVertex3f(width,height,0);
+
+        gl.glVertex3f(width,height,depth);
         gl.glVertex3f(width,0,depth);
+
         gl.glVertex3f(width,height,depth);
         gl.glVertex3f(0,height,depth);
+
+        gl.glVertex3f(0,height,0);
+        gl.glVertex3f(width,height,0);
+
+        gl.glVertex3f(0,height,0);
+        gl.glVertex3f(0,height,depth);
+
+        gl.glVertex3f(width,0,depth);
+        gl.glVertex3f(width,0,0);
+
+        gl.glVertex3f(width,0,depth);
+        gl.glVertex3f(0,0,depth);
+
+        gl.glVertex3f(width,0,0);
+        gl.glVertex3f(width,height,0);
+
+        gl.glVertex3f(0,0,depth);
+        gl.glVertex3f(0,height,depth);
+
+
+
 
         gl.glEnd();
 
 
-
-
+        gl.glPopMatrix();
 
     }
 
     private void drawSkeleton(GL2 gl) {
 
-        Skeleton s = sensorHandler.skeleton;
+        Skeleton s = skeleton;
+
 
         if (s==null) {return;}
 
-        gl.glPointSize(10.0f);
+        gl.glPointSize(2.0f);
         gl.glBegin(GL2.GL_POINTS);
 
         gl.glColor3f(1.0f, 0.0f, 0.0f);
@@ -110,7 +178,7 @@ public class Sensor {
         float y2 = s.get3DJointY(id2);
         float z2 = s.get3DJointZ(id2);
         float size = (float) Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2,2)+Math.pow(z1-z2,2));
-        gl.glLineWidth(20f);
+        gl.glLineWidth(2f);
         gl.glBegin(GL2.GL_LINES);
 
         gl.glColor3f(0.0f, 0.0f, 0.0f);

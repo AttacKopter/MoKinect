@@ -1,20 +1,17 @@
-package org.example.Computation;
+package org.example.server.Computation;
 
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.DepthMap;
 import edu.ufl.digitalworlds.j4k.Skeleton;
 import edu.ufl.digitalworlds.j4k.VideoFrame;
-import org.example.GUIHandler;
 
 public class SensorHandler extends J4KSDK {
 
     VideoFrame videoTexture;
-    Sensor sensor;
-    Skeleton skeleton;
+    public Skeleton skeleton;
 
-    public SensorHandler(Sensor sensor) {
+    public SensorHandler() {
         super();
-        this.sensor = sensor;
         videoTexture=new VideoFrame();
     }
 
@@ -23,7 +20,6 @@ public class SensorHandler extends J4KSDK {
         DepthMap map=new DepthMap(getDepthWidth(),getDepthHeight(),XYZ);
         if(UV!=null) map.setUV(UV);
 
-//        guiHandler.setMap(map);
 
 
     }
@@ -42,8 +38,7 @@ public class SensorHandler extends J4KSDK {
             float y = Math.abs(skeletons[i].get3DJointY(1));
             float z = Math.abs(skeletons[i].get3DJointZ(1));
 
-
-            if( (100> x && x > 0.0000001) && (100> y && y > 0.0000001) && (100> z && z > 0.0000001)) {
+            if (skeletons[i].isTracked()) {
                 skeleton = skeletons[i];
             }
         }
@@ -58,4 +53,23 @@ public class SensorHandler extends J4KSDK {
         videoTexture.update(getColorWidth(), getColorHeight(), data);
     }
 
+    public static String getSkeletonString(Skeleton skeleton) {
+        String s = "";
+        if (skeleton == null) {return s;}
+        for (int i=0; i<25; i++) {
+            s += skeleton.get3DJointX(i) + ",";
+            s += skeleton.get3DJointY(i) + ",";
+            s += skeleton.get3DJointZ(i) + ",";
+            s += skeleton.isJointTracked(i) + ";";
+        }
+
+        return s;
+    }
+
+    public static Skeleton getSkeletonFromString(String s) {
+        Skeleton skeleton=new Skeleton();
+        return skeleton;
+
+
+    }
 }
